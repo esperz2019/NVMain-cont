@@ -1,0 +1,34 @@
+diff --git a/configs/common/MemConfig.py b/configs/common/MemConfig.py
+index b8907c0ac..1772b3179 100644
+--- a/configs/common/MemConfig.py
++++ b/configs/common/MemConfig.py
+@@ -228,13 +228,15 @@ def config_mem(options, system):
+                     mem_ctrl = m5.objects.SimpleMemory()
+                 elif opt_mem_type == "QoSMemSinkInterface":
+                     mem_ctrl = m5.objects.QoSMemSinkCtrl()
++                elif opt_mem_type == "NVMainMemory":
++                    mem_ctrl = m5.objects.NVMainMemory()
+                 else:
+                     mem_ctrl = m5.objects.MemCtrl()
+ 
+                 # Hookup the controller to the interface and add to the list
+                 if opt_mem_type == "QoSMemSinkInterface":
+                     mem_ctrl.interface = dram_intf
+-                elif opt_mem_type != "SimpleMemory":
++                elif opt_mem_type not in ["SimpleMemory", "NVMainMemory"]:
+                     mem_ctrl.dram = dram_intf
+ 
+                 mem_ctrls.append(mem_ctrl)
+
+diff --git a/src/mem/request.hh b/src/mem/request.hh
+index 38b64fd8a..cadd008fd 100644
+--- a/src/mem/request.hh
++++ b/src/mem/request.hh
+@@ -250,6 +250,7 @@ class Request
+          * don't come from a particular device
+          */
+         funcRequestorId = 1,
++        funcMasterId [[deprecated]] = 1,
+         /** This requestor id is used for message signaled interrupts */
+         intRequestorId = 2,
+         /**
