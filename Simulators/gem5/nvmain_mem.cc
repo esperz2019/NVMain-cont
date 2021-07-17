@@ -62,11 +62,11 @@ using namespace NVM;
 // contiguous region.
 NVMainMemory *NVMainMemory::masterInstance = NULL;
 
-NVMainMemory::NVMainMemory(const Params *p)
+NVMainMemory::NVMainMemory(const Params &p)
     : AbstractMemory(p), clockEvent(this), respondEvent(this),
-      drainManager(NULL), lat(p->atomic_latency),
-      lat_var(p->atomic_variance), nvmain_atomic(p->atomic_mode),
-      NVMainWarmUp(p->NVMainWarmUp), port(name() + ".port", *this)
+      drainManager(NULL), lat(p.atomic_latency),
+      lat_var(p.atomic_variance), nvmain_atomic(p.atomic_mode),
+      NVMainWarmUp(p.NVMainWarmUp), port(name() + ".port", *this)
 {
     char *cfgparams;
     char *cfgvalues;
@@ -79,7 +79,7 @@ NVMainMemory::NVMainMemory(const Params *p)
     m_nvmainPtr = NULL;
     m_nacked_requests = false;
 
-    m_nvmainConfigPath = p->config;
+    m_nvmainConfigPath = p.config;
 
     m_nvmainConfig = new Config( );
 
@@ -104,8 +104,8 @@ NVMainMemory::NVMainMemory(const Params *p)
      *    configparams = tRCD,tCAS,tRP
      *    configvalues = 8,8,8
      */
-    cfgparams = (char *)p->configparams.c_str();
-    cfgvalues = (char *)p->configvalues.c_str();
+    cfgparams = (char *)p.configparams.c_str();
+    cfgvalues = (char *)p.configvalues.c_str();
 
     for( cparam = strtok_r( cfgparams, ",", &saveptr1 ), cvalue = strtok_r( cfgvalues, ",", &saveptr2 )
            ; (cparam && cvalue) ; cparam = strtok_r( NULL, ",", &saveptr1 ), cvalue = strtok_r( NULL, ",", &saveptr2) )
@@ -163,8 +163,8 @@ NVMainMemory::init()
         statPrinter.forgdb = this;
 
         //registerExitCallback( &statPrinter );
-        ::Stats::registerDumpCallback( &statPrinter );
-        ::Stats::registerResetCallback( &statReseter );
+        ::Stats::registerDumpCallback( [this]() { statPrinter.process(); } );
+        ::Stats::registerResetCallback( [this]() { statReseter.process(); } );
 
         SetEventQueue( m_nvmainEventQueue );
         SetStats( m_statsPtr );

@@ -104,7 +104,7 @@ class NVMainMemory : public AbstractMemory, public NVM::NVMObject
     void ScheduleClockEvent( Tick );
     void SetRequestData(NVM::NVMainRequest *request, PacketPtr pkt);
 
-    class NVMainStatPrinter : public Callback
+    class NVMainStatPrinter
     {
         friend class NVMainMemory;
 
@@ -118,7 +118,7 @@ class NVMainMemory : public AbstractMemory, public NVM::NVMObject
         std::ofstream statStream;
     };
 
-    class NVMainStatReseter : public Callback
+    class NVMainStatReseter
     {
       public:
         void process();
@@ -170,7 +170,7 @@ class NVMainMemory : public AbstractMemory, public NVM::NVMObject
   public:
 
     typedef NVMainMemoryParams Params;
-    NVMainMemory(const Params *p);
+    NVMainMemory(const Params &p);
     virtual ~NVMainMemory();
 
     Port& getPort(const std::string& if_name,
@@ -179,10 +179,10 @@ class NVMainMemory : public AbstractMemory, public NVM::NVMObject
     void startup();
     void wakeup();
 
-    const Params *
+    const Params &
     params() const
     {
-        return dynamic_cast<const Params *>(_params);
+        return dynamic_cast<const Params &>(_params);
     }
 
 
