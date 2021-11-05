@@ -48,6 +48,7 @@
 
 #include "base/random.hh"
 #include "base/statistics.hh"
+#include "base/debug.hh"
 #include "debug/NVMain.hh"
 #include "debug/NVMainMin.hh"
 #include "config/the_isa.hh"
@@ -891,10 +892,4 @@ void NVMainMemory::tick( )
     }
 }
 
-
-NVMainMemory *
-NVMainMemoryParams::create()
-{
-    return new NVMainMemory(this);
-}
 
