@@ -48,7 +48,7 @@
 
 #include "base/random.hh"
 #include "base/statistics.hh"
-#include "base/debug.hh"
+#include "base/trace.hh"
 #include "debug/NVMain.hh"
 #include "debug/NVMainMin.hh"
 #include "config/the_isa.hh"
